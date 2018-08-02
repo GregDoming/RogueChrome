@@ -1,5 +1,14 @@
 //get random image
-const playerPicture = ['cheese.jpeg', 'Snow.jpg',];
+var yourImg = document.getElementById('Snow.jpg');
+if(yourImg && yourImg.style) {
+   yourImg.style.height = '150px';
+   yourImg.style.width = '150x';
+}
+var myAudio = new Audio();        // create the audio object
+myAudio.src = "cheese.wav"; // assign the audio file to its src
+myAudio.play();
+
+const playerPicture = ['Snow.jpg'];
 let imageArr = [];
 let links = document.getElementsByTagName("a");
 let images = document.querySelectorAll('img');
@@ -36,7 +45,7 @@ currentImg.style.left = imgLeft + 'px';
 class Player {
    constructor(direction, enemyLeft, enemyTop, enemyBot) {
       this.player = document.createElement('img');
-      
+      this.playerSpeed = 50;
       this.playerTop = 0;
       this.playerLeft = 0;
       this.width = this.player.style.width;
@@ -51,8 +60,8 @@ class Player {
 
       this.sword = false;
       
-      this.speed = 200;
-      this.movement = 10;
+      this.speed = 220;
+      this.movement = 9;
       this.currentDirection = direction;
       
       this.tracker = 0;
@@ -76,7 +85,7 @@ class Player {
       this.timer = setTimeout(this.move.bind(this), this.speed);   
       //http://www.stickpng.com/assets/images/580b57fbd9996e24bc43c0c9.png
       this.player.classList.add("cheese");
-      this.player.setAttribute('src', chrome.extension.getURL('cheese.jpeg'));
+      this.player.setAttribute('src', chrome.extension.getURL('Snow.jpg'));
       this.player.style.top = this.playerTop + 'px';
       this.player.style.left = this.playerLeft + 'px';
       document.body.appendChild(this.player);
@@ -90,6 +99,7 @@ class Player {
             setTimeout(() => this.player.classList.remove("tint"), 250);
             this.playerHealth -= 1;
             this.healthbar.innerHTML = this.playerHealth;
+            
             //console.log(this.playerHealth);
         }
    }
@@ -99,10 +109,11 @@ class Player {
         this.enemyTop < this.playerTop + this.height &&
         currentImg.height + this.enemyTop > this.playerTop && this.currentDirection === 'right'
         && Keys.sword === true && this.enemyLeft > this.playerLeft) {
-            this.movement += 1;
-            
+            this.movement += 2;
+            this.playerSpeed += 1;
           this.enemyHealth -= 1; 
           this.enemyhealthbar.innerHTML = this.enemyHealth;
+          myAudio.play();
           console.log(this.enemyHealth);       
           currentImg.classList.add("tint");
           setTimeout(() => currentImg.classList.remove("tint"), 250);  
@@ -113,7 +124,9 @@ class Player {
         currentImg.height + this.enemyTop > this.playerTop && this.currentDirection === 'left'
         && Keys.sword === true && this.enemyLeft < this.playerLeft) {
             this.enemyHealth -= 1; 
-            this.movement += 1;
+            this.playerSpeed += 2;
+            myAudio.play();
+            this.movement += 2;
             this.enemyhealthbar.innerHTML = this.enemyHealth;
             console.log(this.enemyHealth);  
             currentImg.classList.add("tint");
@@ -124,7 +137,9 @@ class Player {
              this.enemyTop < this.playerTop - this.height &&
              currentImg.height + this.enemyTop + 250 > this.playerTop && this.currentDirection === 'up'
              && Keys.sword === true ) {
-                 this.movement += 1;
+                this.playerSpeed += 2;
+                myAudio.play();
+                 this.movement += 2;
              this.enemyHealth -= 1;
              this.enemyhealthbar.innerHTML = this.enemyHealth; 
              console.log(this.enemyHealth); 
@@ -137,7 +152,9 @@ class Player {
              this.enemyTop < this.playerTop + this.height + 120 &&
              currentImg.height + this.enemyTop > this.playerTop && this.currentDirection === 'down'
              && Keys.sword === true && this.enemyTop > this.playerTop) {
-                 this.movement += 1;
+                this.playerSpeed += 2;
+                myAudio.play()
+                 this.movement += 2;
                this.enemyHealth -= 1; 
                this.enemyhealthbar.innerHTML = this.enemyHealth;
                console.log(this.enemyHealth);   
@@ -154,6 +171,7 @@ class Player {
 }
 enemyDeath() {
     if (this.enemyHealth === 0) {
+        alert("You win! Why?")
       window.location.reload();
 
     }
@@ -246,10 +264,10 @@ this.attackEnemySword();
       let direction = this.currentDirection;
 
       //shift head position
-      if (direction === 'right' && this.playerLeft <= window.innerWidth - 125) this.playerLeft += 50;
-      else if (direction === 'left' && this.playerLeft >= 0) this.playerLeft -= 50;
-      else if (direction === 'up' && this.playerTop >= 0) this.playerTop -= 50;
-      else if (direction === 'down'&& this.playerTop <= window.innerHeight - 125) this.playerTop += 50; 
+      if (direction === 'right' && this.playerLeft <= window.innerWidth - 125) this.playerLeft += this.playerSpeed;
+      else if (direction === 'left' && this.playerLeft >= 0) this.playerLeft -= this.playerSpeed; 
+      else if (direction === 'up' && this.playerTop >= 0) this.playerTop -= this.playerSpeed;
+      else if (direction === 'down'&& this.playerTop <= window.innerHeight - 125) this.playerTop += this.playerSpeed; 
 
       //update head position
       this.player.style.top = this.playerTop + 'px';
