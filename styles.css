@@ -3,8 +3,8 @@ body {
 }
 
 .cheese {
-   top: 50px;
-   left: 50px;
+   top: 0px;
+   left: 0px;
    height: 100px;
    width: 100px;
    position: absolute;
