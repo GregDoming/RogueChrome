@@ -5,32 +5,75 @@ const currentImg = images[randomImageIndex];
 
 //get an image's coordinates
 let rect = currentImg.getBoundingClientRect();
-console.log(rect.top, rect.right, rect.bottom, imgLeft);
+console.log(rect.top, rect.right, rect.bottom, rect.left);
 
 currentImg.style.border = "solid 1px red";
 currentImg.style.position = "absolute";
 currentImg.style.zIndex = "10000";
 
-let imgTop = rect.tops;
+let imgTop = rect.top;
 let imgLeft = rect.left;
-currentImg.style.top = rect.top + 'px';
+currentImg.style.top = imgTop + 'px';
 currentImg.style.left = imgLeft + 'px';
 
 /**************************************CHEESE MOVEMENT***********************************/
 class Player {
-   constructor(direction) {
+   constructor(direction, enemyLeft, enemyTop) {
       this.player = document.createElement('img');
       this.playerTop = 0;
       this.playerLeft = 0;
       this.speed = 500;
+      this.movement = 50;
       this.currentDirection = direction;
-      this.timer = setTimeout(this.move.bind(this), this.speed);
-                        
+      this.enemyTop = enemyTop;
+      this.enemyLeft = enemyLeft;
+      this.timer = setTimeout(this.move.bind(this), this.speed);                       
       this.player.classList.add("cheese");
       this.player.setAttribute('src', 'http://www.stickpng.com/assets/images/580b57fbd9996e24bc43c0c9.png');
       this.player.style.top = this.playerTop + 'px';
       this.player.style.left = this.playerLeft + 'px';
       document.body.appendChild(this.player);
+   }
+
+   enemyFollowPlayer() {
+      if (this.enemyLeft > this.playerLeft && this.enemyTop > this.playerTop) {
+         this.enemyLeft -= this.movement;
+         this.enemyTop -= this.movement;
+      }
+      else if (this.enemyLeft < this.playerLeft && this.enemyTop > this.playerTop) {
+         this.enemyLeft += this.movement;
+         this.enemyTop -= this.movement;                        
+      
+      }
+      else if (this.enemyLeft > this.playerLeft && this.enemyTop < this.playerTop) {
+         this.enemyLeft -= this.movement;
+         this.enemyTop += this.movement;
+         
+      }
+      else if (this.enemyLeft < this.playerLeft && this.enemyTop < this.playerTop) {
+         this.enemyLeft += this.movement;
+         this.enemyTop += this.movement;
+         
+      }
+      else if (this.enemyLeft === this.playerLeft && this.enemyTop > this.playerTop) {
+         this.enemyTop -= this.movement;
+         
+      }
+      else if (this.enemyLeft > this.playerLeft && this.enemyTop === this.playerTop) {
+         this.enemyLeft -= this.movement;
+         
+      }
+      else if (this.enemyLeft === this.playerLeft && this.enemyTop < this.playerTop) {
+         this.enemyTop += this.movement;
+         
+      }
+      else if (this.enemyLeft < this.playerLeft && this.enemyTop === this.playerTop) {
+         this.enemyLeft += this.movement;
+         
+      }
+
+      currentImg.style.top = this.enemyTop + 'px';
+      currentImg.style.left = this.enemyLeft + 'px';
    }
 
    move() {
@@ -45,11 +88,14 @@ class Player {
       //update head position
       this.player.style.top = this.playerTop + 'px';
       this.player.style.left = this.playerLeft + 'px';
+      //update enemy
+      this.enemyFollowPlayer();
+
       setTimeout(this.move.bind(this), this.speed);
    }
 }
 
-const player = new Player('noMove');
+const player = new Player('noMove', imgLeft, imgTop);
 
 //document.body.addEventListener('keydown', ...)
 const Keys = {
@@ -97,41 +143,43 @@ function readKeys() {
 
 /**************************************************************************************/
 
-function enemyFollowPlayer(enemyX, enemyY, playerX, playerY) {
-    if (img)
-        imgLeft -= this.speed;
-        imgTop -= this.speed;
-    }
-    if (imgLeft < playerX && imgTop > playerY) {
-        imgLeft += this.speed;
-        imgTop -= this.speed;                        
+// function enemyFollowPlayer(this.enemyLeft, this.enemyTop, this.playerLeft, this.playerTop, this.movement) {
+//     if (this.enemyLeft > this.playerLeft && this.enemyTop > this.playerTop) {
+//         imgLeft -= this.movement;
+//         imgTop -= this.movement;
+//     }
+//     if (this.enemyLeft < this.playerLeft && this.enemyTop > this.playerTop) {
+//         imgLeft += this.movement;
+//         imgTop -= this.movement;                        
         
-    }
-    if (imgLeft > playerX && imgTop < playerY) {
-        imgLeft -= this.speed;
-        imgTop += this.speed;
+//     }
+//     if (this.enemyLeft > this.playerLeft && this.enemyTop < this.playerTop) {
+//         imgLeft -= this.movement;
+//         imgTop += this.movement;
         
-    }
-    if (imgLeft < playerX && imgTop < playerY) {
-        imgLeft += this.speed;
-        imgTop += this.speed;
+//     }
+//     if (this.enemyLeft < this.playerLeft && this.enemyTop < this.playerTop) {
+//         imgLeft += this.movement;
+//         imgTop += this.movement;
         
-    }
-    if (imgLeft === playerX && imgTop > playerY) {
-        imgTop -= this.speed;
+//     }
+//     if (this.enemyLeft === this.playerLeft && this.enemyTop > this.playerTop) {
+//         imgTop -= this.movement;
         
-    }
-    if (imgLeft > playerX && imgTop === playerY) {
-        imgLeft -= this.speed;
+//     }
+//     if (this.enemyLeft > this.playerLeft && this.enemyTop === this.playerTop) {
+//         imgLeft -= this.movement;
         
-    }
-    if (imgLeft === playerX && imgTop < playerY) {
-        imgTop += this.speed;
+//     }
+//     if (this.enemyLeft === this.playerLeft && this.enemyTop < this.playerTop) {
+//         imgTop += this.movement;
         
-    }
-    if (imgLeft < playerX && imgTop === playerY) {
-        imgLeft += this.speed;
+//     }
+//     if (this.enemyLeft < this.playerLeft && this.enemyTop === this.playerTop) {
+//         imgLeft += this.movement;
         
-    }
-}
-//function imageBoarder() {}
+//     }
+
+//     currentImg.style.top = imgTop + 'px';
+//     currentImg.style.left = imgLeft + 'px';
+// }
