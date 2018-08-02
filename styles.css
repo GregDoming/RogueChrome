@@ -1,12 +1,35 @@
-body {
-   /* background: url('https://media.giphy.com/media/3o7WTDJQVuYwhhuLhC/giphy.gif') !important; */
-}
-
 .cheese {
    top: 0px;
    left: 0px;
    height: 100px;
    width: 100px;
    position: absolute;
-   z-index: 10000;
+   z-index: 10000000;
+}
+
+.sword {
+   top: 0px;
+   left: 0px;
+   height: 50px;
+   width: auto;
+   position: absolute;
+   z-index: 100000;
+}
+
+.hideSword {
+   display: none;
+}
+
+.leftSword {
+   transform: rotate(180deg)
+}
+.downSword {
+   transform: rotate(90deg)
+}
+.upSword {
+   transform: rotate(270deg)
+}
+
+.tint {
+   opacity: 0.5;
 }
