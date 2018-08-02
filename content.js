@@ -1,10 +1,11 @@
 //get random image
 const images = document.querySelectorAll('img');
-let randomImageIndex = Math.floor(images.length * Math.random());
+let randomImageIndex = [1];//Math.floor(images.length * Math.random());
 const currentImg = images[randomImageIndex];
 
 //get an image's coordinates
 let rect = currentImg.getBoundingClientRect();
+let imageHp = 2;
 console.log(rect.top, rect.right, rect.bottom, rect.left);
 
 //currentImg.style.border = "solid 1px red";
@@ -59,6 +60,14 @@ class Player {
             this.player.classList.add("tint");
             setTimeout(() => this.player.classList.remove("tint"), 250);
             this.playerHealth -= 1;
+        }
+   }
+   attackEnemySword() {
+       if (this.enemyLeft < this.playerLeft + this.width + 80  &&
+        this.enemyLeft + currentImg.width > this.playerLeft &&
+        this.enemyTop < this.playerTop + this.height &&
+        currentImg.height + this.enemyTop > this.playerTop && this.currentDirection === 'left' && Keys.sword === true) {
+            
         }
    }
    playerDeath() {
@@ -142,6 +151,8 @@ class Player {
          }
       } else {
          this.swordElement.classList.add('hideSword');
+         this.swordElement.style.left = -100 + 'px';
+         this.swordElement.style.top = -100 + 'px';
       }
    }
 
