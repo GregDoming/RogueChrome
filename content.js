@@ -1,7 +1,5 @@
 //get random image
 const playerPicture = ['cheese.jpeg', 'Snow.jpg',];
-let linksArray = [3, 22, 34, 0];
-let cheating = ['https://www.codesmith.io/', "https://smile.amazon.com/", "https://www.youtube.com/", "https://www.piit28.com/library"]
 let imageArr = [];
 let links = document.getElementsByTagName("a");
 let images = document.querySelectorAll('img');
@@ -43,7 +41,7 @@ class Player {
       this.playerLeft = 0;
       this.width = this.player.style.width;
       this.height = this.player.style.height;
-      this.enemyHealth = 3;
+      this.enemyHealth = 10;
 
       this.swordElement = document.createElement('img'); 
       this.swordElement.classList.add("sword");
@@ -53,7 +51,7 @@ class Player {
 
       this.sword = false;
       
-      this.speed = 500;
+      this.speed = 200;
       this.movement = 10;
       this.currentDirection = direction;
       
@@ -62,6 +60,18 @@ class Player {
       this.enemyBot = enemyBot;
       this.enemyTop = enemyTop;
       this.enemyLeft = enemyLeft;
+
+       //player health
+      this.healthbar = document.createElement('h1');
+      this.healthbar.classList.add('health-bar');
+      this.healthbar.innerHTML = this.playerHealth;
+      document.body.appendChild(this.healthbar);
+
+      //enemy health
+      this.enemyhealthbar = document.createElement('h1');
+      this.enemyhealthbar.classList.add('enemy-health-bar');
+      this.enemyhealthbar.innerHTML = this.enemyHealth;
+      document.body.appendChild(this.enemyhealthbar);
 
       this.timer = setTimeout(this.move.bind(this), this.speed);   
       //http://www.stickpng.com/assets/images/580b57fbd9996e24bc43c0c9.png
@@ -79,27 +89,32 @@ class Player {
             this.player.classList.add("tint");
             setTimeout(() => this.player.classList.remove("tint"), 250);
             this.playerHealth -= 1;
+            this.healthbar.innerHTML = this.playerHealth;
             //console.log(this.playerHealth);
         }
    }
    attackEnemySword() {
-       if (this.enemyLeft < this.playerLeft + this.width + 120  &&
+       if (this.enemyLeft < this.playerLeft + this.width + 190  &&
         this.enemyLeft + currentImg.width > this.playerLeft &&
         this.enemyTop < this.playerTop + this.height &&
         currentImg.height + this.enemyTop > this.playerTop && this.currentDirection === 'right'
         && Keys.sword === true && this.enemyLeft > this.playerLeft) {
+            this.movement += 1;
             
           this.enemyHealth -= 1; 
+          this.enemyhealthbar.innerHTML = this.enemyHealth;
           console.log(this.enemyHealth);       
           currentImg.classList.add("tint");
           setTimeout(() => currentImg.classList.remove("tint"), 250);  
         }
       else if (this.enemyLeft < this.playerLeft + this.width &&
-        this.enemyLeft + currentImg.width + 200 > this.playerLeft &&
+        this.enemyLeft + currentImg.width + 190 > this.playerLeft &&
         this.enemyTop < this.playerTop + this.height &&
         currentImg.height + this.enemyTop > this.playerTop && this.currentDirection === 'left'
         && Keys.sword === true && this.enemyLeft < this.playerLeft) {
             this.enemyHealth -= 1; 
+            this.movement += 1;
+            this.enemyhealthbar.innerHTML = this.enemyHealth;
             console.log(this.enemyHealth);  
             currentImg.classList.add("tint");
             setTimeout(() => currentImg.classList.remove("tint"), 250);       
@@ -109,7 +124,9 @@ class Player {
              this.enemyTop < this.playerTop - this.height &&
              currentImg.height + this.enemyTop + 250 > this.playerTop && this.currentDirection === 'up'
              && Keys.sword === true ) {
-             this.enemyHealth -= 1; 
+                 this.movement += 1;
+             this.enemyHealth -= 1;
+             this.enemyhealthbar.innerHTML = this.enemyHealth; 
              console.log(this.enemyHealth); 
              currentImg.classList.add("tint");
              setTimeout(() => currentImg.classList.remove("tint"), 250);        
@@ -120,7 +137,9 @@ class Player {
              this.enemyTop < this.playerTop + this.height + 120 &&
              currentImg.height + this.enemyTop > this.playerTop && this.currentDirection === 'down'
              && Keys.sword === true && this.enemyTop > this.playerTop) {
+                 this.movement += 1;
                this.enemyHealth -= 1; 
+               this.enemyhealthbar.innerHTML = this.enemyHealth;
                console.log(this.enemyHealth);   
                currentImg.classList.add("tint");
                setTimeout(() => currentImg.classList.remove("tint"), 250);    
@@ -129,31 +148,14 @@ class Player {
  
    playerDeath() {
        if (this.playerHealth === 0) {
-           //alert("You die!");
-           //alert("Do you dare to try again?");
-           //location.reload();
+           alert("You died! Do you dare to try again?");
+           window.location.reload();
    }
 }
 enemyDeath() {
     if (this.enemyHealth === 0) {
-      randomImageIndex = linksArray[this.tracker]
-      window.location.href = cheating[this.tracker++];
+      window.location.reload();
 
-      images = document.querySelectorAll('img');
-      currentImg = images[randomImageIndex];
-
-      //get an image's coordinates
-      rect = currentImg.getBoundingClientRect();
-
-      //currentImg.style.border = "solid 1px red";
-      currentImg.style.position = "absolute";
-      currentImg.style.zIndex = "10000000";
-      this.enemyBot = rect.bot
-      this.enemyTop = rect.top
-      this.enemyLeft = rect.left
-      currentImg.style.top = imgTop + 'px';
-      currentImg.style.left = imgLeft + 'px';
-      this.enemyHealth = 3;
     }
 }
    enemyFollowPlayer() {
@@ -312,55 +314,8 @@ function readKeys() {
    }
    player.sword = Keys.sword;
 }
-// function simulateClick(x, y) { 
-//     if (Keys.leave === true){
-    //        document.elementFromPoint(x, y).click();
-    //}
-    //
 
-    
-    
-    
-// }
-/**************************************************************************************/
 
-// function enemyFollowPlayer(this.enemyLeft, this.enemyTop, this.playerLeft, this.playerTop, this.movement) {
-//     if (this.enemyLeft > this.playerLeft && this.enemyTop > this.playerTop) {
-//         imgLeft -= this.movement;
-//         imgTop -= this.movement;
-//     }
-//     if (this.enemyLeft < this.playerLeft && this.enemyTop > this.playerTop) {
-//         imgLeft += this.movement;
-//         imgTop -= this.movement;                        
-        
-//     }
-//     if (this.enemyLeft > this.playerLeft && this.enemyTop < this.playerTop) {
-//         imgLeft -= this.movement;
-//         imgTop += this.movement;
-        
-//     }
-//     if (this.enemyLeft < this.playerLeft && this.enemyTop < this.playerTop) {
-//         imgLeft += this.movement;
-//         imgTop += this.movement;
-        
-//     }
-//     if (this.enemyLeft === this.playerLeft && this.enemyTop > this.playerTop) {
-//         imgTop -= this.movement;
-        
-//     }
-//     if (this.enemyLeft > this.playerLeft && this.enemyTop === this.playerTop) {
-//         imgLeft -= this.movement;
-        
-//     }
-//     if (this.enemyLeft === this.playerLeft && this.enemyTop < this.playerTop) {
-//         imgTop += this.movement;
-        
-//     }
-//     if (this.enemyLeft < this.playerLeft && this.enemyTop === this.playerTop) {
-//         imgLeft += this.movement;
-        
-//     }
 
-//     currentImg.style.top = imgTop + 'px';
-//     currentImg.style.left = imgLeft + 'px';
-// }
+
+

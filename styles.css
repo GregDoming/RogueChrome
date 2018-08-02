@@ -35,3 +35,31 @@
 .tint {
    opacity: 0.5;
 }
+
+.health-bar {
+   position: absolute;
+   z-index: 1000000;
+   background-color: black;
+   line-height: 100px;
+   font-size: 50px !important;
+   color: white;
+   margin: 20px;
+   text-align: center;
+   top: 0;
+   left: 0;
+   width: 100px;
+}
+
+.enemy-health-bar {
+   position: absolute;
+   z-index: 1000000;
+   background-color: red;
+   line-height: 100px;
+   font-size: 50px !important;
+   color: white;
+   margin: 20px;
+   text-align: center;
+   top: 0;
+   right: 0;
+   width: 100px;
+}
