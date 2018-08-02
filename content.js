@@ -1,25 +1,24 @@
 //get random image
-const playerPicture = ['cheese.jpeg', 'Snow.jpg'];
-let linksArray = [];
+const playerPicture = ['cheese.jpeg', 'Snow.jpg',];
+let linksArray = [3, 22, 34, 0];
+let cheating = ['https://www.codesmith.io/', "https://smile.amazon.com/", "https://www.youtube.com/", "https://www.piit28.com/library"]
 let imageArr = [];
 let links = document.getElementsByTagName("a");
 let images = document.querySelectorAll('img');
 function doOnLoad() {
-    console.log('hi')
-    for(let i = 0; i < links.length; i++) {
-        linksArray.push(links[i].href);       
-    }
+    // for(let i = 0; i < links.length; i++) {
+    //     linksArray.push(links[i].href);       
+    // }
     for(let i = 0; i < images.length; i +=1) {
-        if (images[i].width && images[i].width > 50 && images[i].width < 500){
+        if (images[i].width && images[i].width > 50 && images[i].width < 500 && images[i].x < 700 && images[i].y < 700 ){
         imageArr.push(images[i])
         }
 
     }
 }
 window.onload = doOnLoad();
-let randomImageIndex = [1];
-const currentImg = imageArr[randomImageIndex];
-console.log(imageArr)
+let randomImageIndex = 1;// = Math.floor(Math.random() * imageArr.length);
+let currentImg = imageArr[randomImageIndex];
 
 //get an image's coordinates
 let rect = currentImg.getBoundingClientRect();
@@ -54,10 +53,11 @@ class Player {
 
       this.sword = false;
       
-      this.speed = 250;
-      this.movement = 3;
+      this.speed = 500;
+      this.movement = 10;
       this.currentDirection = direction;
       
+      this.tracker = 0;
       this.playerHealth = 3;
       this.enemyBot = enemyBot;
       this.enemyTop = enemyTop;
@@ -89,34 +89,42 @@ class Player {
         currentImg.height + this.enemyTop > this.playerTop && this.currentDirection === 'right'
         && Keys.sword === true && this.enemyLeft > this.playerLeft) {
             
-        this.enemyHealth -= 1; 
-        console.log(this.enemyHealth);       
+          this.enemyHealth -= 1; 
+          console.log(this.enemyHealth);       
+          currentImg.classList.add("tint");
+          setTimeout(() => currentImg.classList.remove("tint"), 250);  
         }
-      if (this.enemyLeft < this.playerLeft + this.width &&
+      else if (this.enemyLeft < this.playerLeft + this.width &&
         this.enemyLeft + currentImg.width + 200 > this.playerLeft &&
         this.enemyTop < this.playerTop + this.height &&
         currentImg.height + this.enemyTop > this.playerTop && this.currentDirection === 'left'
         && Keys.sword === true && this.enemyLeft < this.playerLeft) {
-        this.enemyHealth -= 1; 
-            console.log(this.enemyHealth);       
-            }
-      if (this.enemyLeft < this.playerLeft + this.width  &&
+            this.enemyHealth -= 1; 
+            console.log(this.enemyHealth);  
+            currentImg.classList.add("tint");
+            setTimeout(() => currentImg.classList.remove("tint"), 250);       
+      }
+      else if (this.enemyLeft < this.playerLeft + this.width  &&
             this.enemyLeft + currentImg.width > this.playerLeft &&
              this.enemyTop < this.playerTop - this.height &&
              currentImg.height + this.enemyTop + 250 > this.playerTop && this.currentDirection === 'up'
              && Keys.sword === true ) {
              this.enemyHealth -= 1; 
-             console.log(this.enemyHealth);       
-            }
-      if (this.enemyLeft < this.playerLeft + this.width &&
+             console.log(this.enemyHealth); 
+             currentImg.classList.add("tint");
+             setTimeout(() => currentImg.classList.remove("tint"), 250);        
+      }
+
+      else if (this.enemyLeft < this.playerLeft + this.width &&
              this.enemyLeft + currentImg.width > this.playerLeft &&
              this.enemyTop < this.playerTop + this.height + 120 &&
              currentImg.height + this.enemyTop > this.playerTop && this.currentDirection === 'down'
              && Keys.sword === true && this.enemyTop > this.playerTop) {
-             this.enemyHealth -= 1; 
-             console.log(this.enemyHealth);       
-                }
-
+               this.enemyHealth -= 1; 
+               console.log(this.enemyHealth);   
+               currentImg.classList.add("tint");
+               setTimeout(() => currentImg.classList.remove("tint"), 250);    
+      }
    }
  
    playerDeath() {
@@ -128,7 +136,24 @@ class Player {
 }
 enemyDeath() {
     if (this.enemyHealth === 0) {
-     window.location.href = linksArray[7];
+      randomImageIndex = linksArray[this.tracker]
+      window.location.href = cheating[this.tracker++];
+
+      images = document.querySelectorAll('img');
+      currentImg = images[randomImageIndex];
+
+      //get an image's coordinates
+      rect = currentImg.getBoundingClientRect();
+
+      //currentImg.style.border = "solid 1px red";
+      currentImg.style.position = "absolute";
+      currentImg.style.zIndex = "10000000";
+      this.enemyBot = rect.bot
+      this.enemyTop = rect.top
+      this.enemyLeft = rect.left
+      currentImg.style.top = imgTop + 'px';
+      currentImg.style.left = imgLeft + 'px';
+      this.enemyHealth = 3;
     }
 }
    enemyFollowPlayer() {
@@ -212,7 +237,6 @@ enemyDeath() {
 
    move() {
        
-console.log(Keys.sword)
 this.attackEnemySword();
       this.enemyPlayerCollision();
       this.playerDeath();
