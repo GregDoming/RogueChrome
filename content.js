@@ -28,3 +28,7 @@ document.addEventListener('keydown', function(e) {
 })
 
 //currentImg.width // currentImg.height;
+function imageChaseMan(manX, manY, enemyX, enemyY) {
+    if 
+
+}
