@@ -1,17 +1,35 @@
 //get random image
-const images = document.querySelectorAll('img');
-let randomImageIndex = [1];//Math.floor(images.length * Math.random());
-const currentImg = images[randomImageIndex];
+const playerPicture = ['cheese.jpeg', 'Snow.jpg'];
+let linksArray = [];
+let imageArr = [];
+let links = document.getElementsByTagName("a");
+let images = document.querySelectorAll('img');
+function doOnLoad() {
+    console.log('hi')
+    for(let i = 0; i < links.length; i++) {
+        linksArray.push(links[i].href);       
+    }
+    for(let i = 0; i < images.length; i +=1) {
+        if (images[i].width && images[i].width > 50 && images[i].width < 500){
+        imageArr.push(images[i])
+        }
+
+    }
+}
+window.onload = doOnLoad();
+let randomImageIndex = [1];
+const currentImg = imageArr[randomImageIndex];
+console.log(imageArr)
 
 //get an image's coordinates
 let rect = currentImg.getBoundingClientRect();
-let imageHp = 2;
+//console.log(rect.width)
 console.log(rect.top, rect.right, rect.bottom, rect.left);
 
 //currentImg.style.border = "solid 1px red";
 currentImg.style.position = "absolute";
 currentImg.style.zIndex = "10000000";
-
+let imgBot = rect.bot;
 let imgTop = rect.top;
 let imgLeft = rect.left;
 currentImg.style.top = imgTop + 'px';
@@ -19,13 +37,14 @@ currentImg.style.left = imgLeft + 'px';
 
 /**************************************CHEESE MOVEMENT***********************************/
 class Player {
-   constructor(direction, enemyLeft, enemyTop) {
+   constructor(direction, enemyLeft, enemyTop, enemyBot) {
       this.player = document.createElement('img');
       
       this.playerTop = 0;
       this.playerLeft = 0;
       this.width = this.player.style.width;
       this.height = this.player.style.height;
+      this.enemyHealth = 3;
 
       this.swordElement = document.createElement('img'); 
       this.swordElement.classList.add("sword");
@@ -36,11 +55,11 @@ class Player {
       this.sword = false;
       
       this.speed = 250;
-      this.movement = 20;
+      this.movement = 3;
       this.currentDirection = direction;
       
       this.playerHealth = 3;
-      
+      this.enemyBot = enemyBot;
       this.enemyTop = enemyTop;
       this.enemyLeft = enemyLeft;
 
@@ -60,22 +79,57 @@ class Player {
             this.player.classList.add("tint");
             setTimeout(() => this.player.classList.remove("tint"), 250);
             this.playerHealth -= 1;
+            //console.log(this.playerHealth);
         }
    }
    attackEnemySword() {
-       if (this.enemyLeft < this.playerLeft + this.width + 80  &&
+       if (this.enemyLeft < this.playerLeft + this.width + 120  &&
         this.enemyLeft + currentImg.width > this.playerLeft &&
         this.enemyTop < this.playerTop + this.height &&
-        currentImg.height + this.enemyTop > this.playerTop && this.currentDirection === 'left' && Keys.sword === true) {
+        currentImg.height + this.enemyTop > this.playerTop && this.currentDirection === 'right'
+        && Keys.sword === true && this.enemyLeft > this.playerLeft) {
             
+        this.enemyHealth -= 1; 
+        console.log(this.enemyHealth);       
         }
+      if (this.enemyLeft < this.playerLeft + this.width &&
+        this.enemyLeft + currentImg.width + 200 > this.playerLeft &&
+        this.enemyTop < this.playerTop + this.height &&
+        currentImg.height + this.enemyTop > this.playerTop && this.currentDirection === 'left'
+        && Keys.sword === true && this.enemyLeft < this.playerLeft) {
+        this.enemyHealth -= 1; 
+            console.log(this.enemyHealth);       
+            }
+      if (this.enemyLeft < this.playerLeft + this.width  &&
+            this.enemyLeft + currentImg.width > this.playerLeft &&
+             this.enemyTop < this.playerTop - this.height &&
+             currentImg.height + this.enemyTop + 250 > this.playerTop && this.currentDirection === 'up'
+             && Keys.sword === true ) {
+             this.enemyHealth -= 1; 
+             console.log(this.enemyHealth);       
+            }
+      if (this.enemyLeft < this.playerLeft + this.width &&
+             this.enemyLeft + currentImg.width > this.playerLeft &&
+             this.enemyTop < this.playerTop + this.height + 120 &&
+             currentImg.height + this.enemyTop > this.playerTop && this.currentDirection === 'down'
+             && Keys.sword === true && this.enemyTop > this.playerTop) {
+             this.enemyHealth -= 1; 
+             console.log(this.enemyHealth);       
+                }
+
    }
+ 
    playerDeath() {
        if (this.playerHealth === 0) {
            //alert("You die!");
            //alert("Do you dare to try again?");
            //location.reload();
    }
+}
+enemyDeath() {
+    if (this.enemyHealth === 0) {
+     window.location.href = linksArray[7];
+    }
 }
    enemyFollowPlayer() {
       if (this.enemyLeft > this.playerLeft && this.enemyTop > this.playerTop) {
@@ -157,8 +211,12 @@ class Player {
    }
 
    move() {
+       
+console.log(Keys.sword)
+this.attackEnemySword();
       this.enemyPlayerCollision();
       this.playerDeath();
+      this.enemyDeath();
       let direction = this.currentDirection;
 
       //shift head position
@@ -179,7 +237,7 @@ class Player {
    }
 }
 
-const player = new Player('noMove', imgLeft, imgTop);
+const player = new Player('noMove', imgLeft, imgTop, imgBot);
 
 //document.body.addEventListener('keydown', ...)
 const Keys = {

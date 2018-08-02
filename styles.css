@@ -6,7 +6,9 @@
    position: absolute;
    z-index: 10000000;
 }
-
+.enemyImg {
+    
+}
 .sword {
    top: 0px;
    left: 0px;
